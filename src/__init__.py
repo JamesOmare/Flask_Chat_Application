@@ -24,7 +24,12 @@ def create_app(config = Config):
 
     create_database(app)
 
-    login_manager.login_view = 'auth.'
+    login_manager.login_view = 'auth.login'
+
+    @login_manager.user_loader
+    def load_user(id):
+       return User.query.get(int(id))
+
     
     
     return app

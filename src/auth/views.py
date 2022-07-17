@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, redirect, render_template, request, flash, url_for
-from .form_fields import RegistrationForm
+from .form_fields import RegistrationForm, LoginForm
 from ..models.user import User
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -37,7 +37,7 @@ def register():
                 login_user(new_user, remember=True)
                 flash('User created', 'success')
 
-                return 'Signed up successfully'
+                return redirect(url_for('auth.login'))
 
     
 
@@ -45,12 +45,12 @@ def register():
 
 @auth.route('/login', methods = ['GET', 'POST'])
 def login():
-    reg_form = RegistrationForm()
+    login_form = LoginForm()
 
     if request.method == 'POST':
-        if reg_form.validate_on_submit():
-            username = reg_form.username.data
-            password = reg_form.password.data
+        if login_form.validate_on_submit():
+            username = login_form.username.data
+            password = login_form.password.data
 
             user = User.query.filter_by(username = username).first()
             if user:
@@ -61,12 +61,12 @@ def login():
                     return 'Logged In successfully'
                 
                 else:
-                    flash('Password is incorrect!', 'error')
+                    flash('Username or Password is incorrect!', 'error')
                 
             else:
-                flash('Username does not exist!', 'error')
+                flash('Username or Password is incorrect!', 'error')
     
-    return render_template('register.html', form = reg_form, user = current_user)
+    return render_template('login.html', form = login_form, user = current_user)
 
 @auth.route('/logout')
 @login_required

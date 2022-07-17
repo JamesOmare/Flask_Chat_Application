@@ -1,24 +1,23 @@
 {% from 'form_macros.html' import displayField %}
-
 {% extends 'base.html' %}
 
-{% block title %}Registration {% endblock %}
+{% block title %} Login {% endblock %}
 
 {% block content %}
-    <h1>Registration Page</h1>
 
-    <form action="{{url_for('auth.register')}}", method="POST">
-        
+    <h2>Login Page</h2>
+    <p>Enter your username and password: </p>
+
+    <form action="{{ url_for('auth.login')}}", method="POST">
+         
         {{displayField(form.username, 'Enter Username', autocomplete='off', autofocus=true) }}
 
         {{displayField(form.password, 'Enter Password') }}
 
-        {{displayField(form.confirm_pass, 'Confirm Password') }}
 
         <div>
             {{ form.submit_btn }}
         </div>
-
 
         {{ form.csrf_token }}
     </form>
@@ -26,8 +25,9 @@
     <div>
         <a href="/login"> 
             <button class="btn btn-primary btn-sm">
-            Login Instead
+            Sign Up instead
             </button>
         </a>
     </div>
+
 {% endblock %}
