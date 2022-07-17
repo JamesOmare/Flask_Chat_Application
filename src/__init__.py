@@ -3,6 +3,7 @@ from os import path
 from .config.config import Config
 from .models.user import User
 from .auth.views import auth
+from .chat.views import chat
 from.utils import db, migrate, login_manager
 from flask_migrate import Migrate
 from werkzeug.exceptions import NotFound, MethodNotAllowed
@@ -21,6 +22,7 @@ def create_app(config = Config):
 
     #register blueprints
     app.register_blueprint(auth)
+    app.register_blueprint(chat)
 
     create_database(app)
 

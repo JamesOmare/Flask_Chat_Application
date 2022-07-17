@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, redirect, render_template, request, flash, url_for
+from flask import Blueprint, jsonify, redirect, render_template, request, flash, url_for, current_app
 from .form_fields import RegistrationForm, LoginForm
 from ..models.user import User
 from flask_login import login_user, logout_user, login_required, current_user
@@ -35,7 +35,7 @@ def register():
                 db.session.add(new_user)
                 db.session.commit()
                 login_user(new_user, remember=True)
-                flash('User created', 'success')
+                flash('User created, you can log in with the registered credentials', 'success')
 
                 return redirect(url_for('auth.login'))
 
@@ -56,9 +56,8 @@ def login():
             if user:
                 if check_password_hash(user.password, password):
                     flash('Logged in!', 'success')
-                    login_user(user, remember=True)
-
-                    return 'Logged In successfully'
+                    login_user(user, remember=True)  
+                    return redirect(url_for('chat.home'))
                 
                 else:
                     flash('Username or Password is incorrect!', 'error')
@@ -72,4 +71,5 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return 'Logged out'
+    flash('You have been logged out!', 'primary')
+    return redirect(url_for('auth.login'))
