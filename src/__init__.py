@@ -1,10 +1,13 @@
 from flask import Flask
+from os import path
 from .config.config import Config
+from .models.user import User
 from .auth.views import auth
-from.utils import db, migrate
+from.utils import db, migrate, login_manager
 from flask_migrate import Migrate
 from werkzeug.exceptions import NotFound, MethodNotAllowed
 
+DB_NAME = 'chat_application.db'
 
 def create_app(config = Config):
     # instance_relative_config states that the 
@@ -14,28 +17,20 @@ def create_app(config = Config):
 
     db.init_app(app)
     migrate.init_app(app, db)
+    login_manager.init_app(app)
 
     #register blueprints
     app.register_blueprint(auth)
 
+    create_database(app)
 
-    @app.errorhandler(NotFound)
-    def not_found(error):
-        return {'error': 'Not Found'}, 404
-
-    @app.errorhandler(MethodNotAllowed)
-    def method_not_allowed(error):
-        return {'error': 'Method Not Allowed'}, 405
-
-
-    @app.shell_context_processor
-    def make_shell_context():
-        return {
-            'db': db
-        }
-
+    login_manager.login_view = 'auth.'
     
-
+    
     return app
 
+def create_database(app):
+    if not path.exists('src/config/'+DB_NAME):
+        db.create_all(app = app)
+        print('created database')
 

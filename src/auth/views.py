@@ -1,5 +1,9 @@
-from flask import Blueprint, jsonify, render_template, request
+from flask import Blueprint, jsonify, redirect, render_template, request, flash, url_for
 from .form_fields import RegistrationForm
+from ..models.user import User
+from flask_login import login_user, logout_user, login_required, current_user
+from werkzeug.security import check_password_hash, generate_password_hash
+from ..utils import db
 
 auth = Blueprint('auth', __name__)
 
@@ -9,9 +13,63 @@ auth = Blueprint('auth', __name__)
 def register():
     reg_form = RegistrationForm()
 
-    #validate on submit returns true if all checks clear out and false otherwise
-    if reg_form.validate_on_submit():
-        return 'form_validated'
     
 
-    return render_template('register.html', form = reg_form)
+    if request.method == 'POST':
+        #validate on submit returns true if all checks clear out and false otherwise
+        if reg_form.validate_on_submit():
+            username = reg_form.username.data
+            password = reg_form.password.data
+
+            #check if username exists
+            username_exists = User.query.filter_by(username = username).first()
+            if username_exists:
+                flash('Username already exists, choose another one.', 'primary')
+            
+            else:
+                new_user = User(
+                    username = username,
+                    password = generate_password_hash(password, method='sha256')
+                )
+
+                db.session.add(new_user)
+                db.session.commit()
+                login_user(new_user, remember=True)
+                flash('User created', 'success')
+
+                return 'Signed up successfully'
+
+    
+
+    return render_template('register.html', form = reg_form, user = current_user)
+
+@auth.route('/login', methods = ['GET', 'POST'])
+def login():
+    reg_form = RegistrationForm()
+
+    if request.method == 'POST':
+        if reg_form.validate_on_submit():
+            username = reg_form.username.data
+            password = reg_form.password.data
+
+            user = User.query.filter_by(username = username).first()
+            if user:
+                if check_password_hash(user.password, password):
+                    flash('Logged in!', 'success')
+                    login_user(user, remember=True)
+
+                    return 'Logged In successfully'
+                
+                else:
+                    flash('Password is incorrect!', 'error')
+                
+            else:
+                flash('Username does not exist!', 'error')
+    
+    return render_template('register.html', form = reg_form, user = current_user)
+
+@auth.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return 'Logged out'
