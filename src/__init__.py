@@ -4,9 +4,11 @@ from .config.config import Config
 from .models.user import User
 from .auth.views import auth
 from .chat.views import chat
-from.utils import db, migrate, login_manager
+from.utils import db, migrate, login_manager, socketio, cors
 from flask_migrate import Migrate
-from werkzeug.exceptions import NotFound, MethodNotAllowed
+from flask_socketio import send
+#from flask_cors import CORS
+#from werkzeug.exceptions import NotFound, MethodNotAllowed
 
 DB_NAME = 'chat_application.db'
 
@@ -16,9 +18,12 @@ def create_app(config = Config):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config)
 
+
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
+    # cors.init_app(app, resources={r"/*":{"origins": "*"}})
+    socketio.init_app(app)
 
     #register blueprints
     app.register_blueprint(auth)
