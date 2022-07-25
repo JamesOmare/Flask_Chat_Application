@@ -4,11 +4,10 @@ from .config.config import Config
 from .models.user import User
 from .auth.views import auth
 from .chat.views import chat
-from.utils import db, migrate, login_manager, socketio, cors
+from.utils import db, migrate, login_manager, socketio
 from flask_migrate import Migrate
 from flask_socketio import send
-#from flask_cors import CORS
-#from werkzeug.exceptions import NotFound, MethodNotAllowed
+
 
 DB_NAME = 'chat_application.db'
 
@@ -22,8 +21,7 @@ def create_app(config = Config):
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
-    # cors.init_app(app, resources={r"/*":{"origins": "*"}})
-    socketio.init_app(app)
+    socketio.init_app(app, cors_allowed_origins=["http://127.0.0.1:5000"])
 
     #register blueprints
     app.register_blueprint(auth)
