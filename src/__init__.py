@@ -1,14 +1,18 @@
 from flask import Flask
 from os import path
+
+from flask_login import current_user
 from .config.config import Config
 from .models.user import User
 from .auth.views import auth
 from .chat.views import chat
-from.utils import db, migrate, login_manager, socketio
+from.utils import db, migrate, login_manager
 from flask_migrate import Migrate
-from flask_socketio import send
+from flask_socketio import send, emit
 
+from flask_socketio import SocketIO
 
+socketio = SocketIO()
 DB_NAME = 'chat_application.db'
 
 def create_app(config = Config):
@@ -35,6 +39,16 @@ def create_app(config = Config):
     def load_user(id):
        return User.query.get(int(id))
 
+    @socketio.on('connect')
+    def connect(data):
+        print(f'Client succesfully connected')
+
+    @socketio.on('message')
+    def message(data):
+        print(f'\n\n{data}\n\n')
+        send(data)
+        
+        #emit('calling', 'This is a custom event message')
     
     
     return app

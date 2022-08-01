@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 
 chat = Blueprint('chat', __name__)
 
-@chat.route('/home')
+@chat.route('/chat')
 # @login_required
 def home():
-    return render_template('chat.html')
+    return render_template('chat.html', username = current_user.username)
