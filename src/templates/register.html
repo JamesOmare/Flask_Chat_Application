@@ -15,19 +15,17 @@
 
         {{displayField(form.confirm_pass, 'Confirm Password') }}
 
-        <div>
-            {{ form.submit_btn }}
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-warning">
         </div>
 
 
         {{ form.csrf_token }}
     </form>
 
+    <hr>
+    <p>Already registered? <a href={{url_for('auth.login')}}>Login here</a>.</p>
     <div>
-        <a href="/login"> 
-            <button class="btn btn-primary btn-sm">
-            Login Instead
-            </button>
-        </a>
+        
     </div>
 {% endblock %}

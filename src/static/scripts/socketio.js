@@ -1,36 +1,89 @@
 document.addEventListener('DOMContentLoaded', () => {
-    var socket = io.connect('http://' + document.domain + ':' + location.port)
+
+    //connect to websocket
+    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port)
+
+    //get username
+    const username = document.querySelector('#get-username').innerHTML
     
     //default room 
     let room = 'Music'
     join_room('Music')
 
+    // displays message in terminal when connection to server is made
     socket.on('connect', () => {
         console.log('connected to server')
-        //one can substitute 'send' with 'emit' but emit is preffered
-        //since it can send both string and objects while send only sends strings
-        socket.send('I am connected')
-        // socket.emit('sum', {numbers:[1,2]})
+        
     })
+
+    // send message
+    document.querySelector('#send_message').onclick = () =>{
+        socket.emit('message', {'msg': document.querySelector('#user_message').value,
+        'username': username, 'room': room})
+    
+    //clear input area when sending message
+    document.querySelector('#user_message').value = ''
+
+    }
 
     //Display incoming messages
     socket.on('message', data => {
-        const p = document.createElement('p')
-        const user = document.createElement('span')
-        const time_stamp = document.createElement('span')
-        const br = document.createElement('br')
 
-        if(data.username){
-            user.innerHTML = data.username
-        time_stamp.innerHTML = data.timestamp
-        p.innerHTML = user.outerHTML+ br.outerHTML + data.msg + br.outerHTML + time_stamp.outerHTML
-        document.querySelector('#display-message-section').append(p)
-        } 
+        //display message when received
+        if(data.msg){
+            console.log(data.msg)
+            const p = document.createElement('p')
+            const user = document.createElement('span')
+            const time_stamp = document.createElement('span')
+            const br = document.createElement('br')
 
-        else{
-            prompt_message(data.msg)
+            //display user's message
+            if(data.username === username){
+                console.log('data.username is =>', data.username, '\nusername is =>', username)
+                p.setAttribute("class", "my-msg")
+
+                //username
+                user.setAttribute("class", "my-username")
+                user.innerHTML = data.username
+
+                //timestamp
+                time_stamp.setAttribute("class", "timestamp")
+                time_stamp.innerHTML = data.timestamp
+
+                //HTML to append
+                p.innerHTML = user.outerHTML+ br.outerHTML + data.msg + br.outerHTML + time_stamp.outerHTML
+
+                //append
+                document.querySelector('#display-message-section').append(p)
+
+            }
+            
+            //Display other users' messages
+            else if(typeof data.username !== 'undefined'){
+                p.setAttribute("class", "other-msg")
+
+                //username
+                user.setAttribute("class", "other-username")
+                user.innerHTML = data.username
+
+                //timestamp
+                time_stamp.setAttribute("class", "timestamp")
+                time_stamp.innerHTML = data.timestamp
+
+                //HTML to append
+                p.innerHTML = user.outerHTML+ br.outerHTML + data.msg + br.outerHTML + time_stamp.outerHTML
+
+                //append
+                document.querySelector('#display-message-section').append(p)
+            }
+
+            //Display system message
+            else{
+                prompt_message(data.msg)
+            }
         }
-        
+       
+        scroll_down_chat()
         
     })
 
@@ -40,12 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         socket.emit('client has been disconnected')
     })
 
-    // send message
-    document.querySelector('#send_message').onclick = () =>{
-        socket.emit('message', {'msg': document.querySelector('#user_message').value,
-        'username': username, 'room': room})
-
-    }
+    
 
     //join a room
     document.querySelectorAll('.select-room').forEach(p => {
@@ -56,6 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (newroom === room) {
                 msg = `You are already in ${room} room.`;
                 prompt_message(msg);
+
             } else {
                 exit_room(room);
                 join_room(newroom);
@@ -83,11 +132,24 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector("#user_message").focus();
     }
 
+
+    // Scroll chat window down
+    function scroll_down_chat() {
+        const chatWindow = document.querySelector("#display-message-section");
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+
     //Print prompt message
     function prompt_message(msg){
         const p = document.createElement('p')
+        p.setAttribute('class', 'system-msg')
         p.innerHTML = msg
         document.querySelector('#display-message-section').append(p)
+        scroll_down_chat()
+
+        //focus on text box
+        document.querySelector('#user_message').focus()
     }
 
 })

@@ -1,8 +1,6 @@
 import datetime
 from flask import Flask
 from os import path
-
-from flask_login import current_user
 from .config.config import Config
 from .models.user import User
 from .auth.views import auth
@@ -53,11 +51,9 @@ def create_app(config = Config):
         
         #Set timestamp
         time = datetime.datetime.now()
-        timestamp = time.strftime("%I:%M:%S %p (%a, %b %d, %Y)")
+        timestamp = time.strftime("%a, %b %d %I:%M %p ")
         
         send({'username': username, 'msg': msg, 'timestamp': timestamp }, room = chatroom)
-        
-        emit('calling', 'This is a custom event message')
 
     @socketio.on('join')
     def join_chatroom(data):
@@ -81,4 +77,3 @@ def create_database(app):
     if not path.exists('src/config/'+DB_NAME):
         db.create_all(app = app)
         print('created database')
-

@@ -6,7 +6,7 @@
 {% block content %}
 
     <h2>Login Page</h2>
-    <p>Enter your username and password: </p>
+    <p>Enter your username and password to enter WhatsChatt </p>
 
     <form action="{{ url_for('auth.login')}}", method="POST">
          
@@ -15,19 +15,16 @@
         {{displayField(form.password, 'Enter Password') }}
 
 
-        <div>
-            {{ form.submit_btn }}
+        <div class="form-group">
+            <input type="submit" value="Login" class="btn btn-warning">
         </div>
 
         {{ form.csrf_token }}
     </form>
 
+    <hr>
     <div>
-        <a href="/"> 
-            <button class="btn btn-primary btn-sm">
-            Sign Up instead
-            </button>
-        </a>
+        <p>Not registered? Create An account. <a href={{url_for('auth.register')}}>Register here</a>.</p>
     </div>
 
 {% endblock %}
