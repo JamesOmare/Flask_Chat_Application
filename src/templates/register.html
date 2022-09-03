@@ -5,27 +5,29 @@
 {% block title %}Registration {% endblock %}
 
 {% block content %}
-    <h1>Registration Page</h1>
+    <div class="middle_section">
+        <h1 class="register_title">Register Here!</h1>
+        <p>Create a WhatsChatt account below.</p>
 
-    <form action="{{url_for('auth.register')}}", method="POST">
-        
-        {{displayField(form.username, 'Enter Username', autocomplete='off', autofocus=true) }}
+        <form action="{{url_for('auth.register')}}", method="POST">
+           <div class="form_input"> 
+                {{displayField(form.username, 'Enter Username', autocomplete='off', autofocus=true) }}
 
-        {{displayField(form.password, 'Enter Password') }}
+                {{displayField(form.password, 'Enter Password') }}
 
-        {{displayField(form.confirm_pass, 'Confirm Password') }}
+                {{displayField(form.confirm_pass, 'Confirm Password') }}
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-warning">
+            </div>
 
-        <div class="form-group">
-            <input type="submit" value="Create" class="btn btn-warning">
-        </div>
 
-
-        {{ form.csrf_token }}
-    </form>
-
-    <hr>
-    <p>Already registered? <a href={{url_for('auth.login')}}>Login here</a>.</p>
-    <div>
-        
+            {{ form.csrf_token }}
+        </form>
     </div>
+    <hr>
+    <div class="footer">
+        <p class="footer-bottom">Already registered? <a href={{url_for('auth.login')}}>Login here</a>.</p>
+    </div>
+
 {% endblock %}

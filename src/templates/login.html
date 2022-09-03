@@ -4,27 +4,27 @@
 {% block title %} Login {% endblock %}
 
 {% block content %}
+    <div class="middle_section">
+        <h2>Login Here!</h2>
+        <p>Enter your username and password to enter WhatsChatt </p>
 
-    <h2>Login Page</h2>
-    <p>Enter your username and password to enter WhatsChatt </p>
+        <form action="{{ url_for('auth.login')}}", method="POST">
+            <div class="form_input">
+                {{displayField(form.username, 'Enter Username', autocomplete='off', autofocus=true) }}
 
-    <form action="{{ url_for('auth.login')}}", method="POST">
-         
-        {{displayField(form.username, 'Enter Username', autocomplete='off', autofocus=true) }}
+                {{displayField(form.password, 'Enter Password') }}
+            </div>
 
-        {{displayField(form.password, 'Enter Password') }}
+            <div class="form-group">
+                <input type="submit" value="Login" class="btn btn-warning">
+            </div>
 
-
-        <div class="form-group">
-            <input type="submit" value="Login" class="btn btn-warning">
-        </div>
-
-        {{ form.csrf_token }}
-    </form>
-
+            {{ form.csrf_token }}
+        </form>
+    </div>
     <hr>
-    <div>
-        <p>Not registered? Create An account. <a href={{url_for('auth.register')}}>Register here</a>.</p>
+    <div class="footer">
+        <p class="footer-bottom">Not registered? Create An account. <a href={{url_for('auth.register')}}>Register here</a>.</p>
     </div>
 
 {% endblock %}
