@@ -1,1 +1,1 @@
-web: gunicorn -b :5000 --worker-class eventlet run:app
+web: gunicorn --worker-class eventlet -w 1 run:app
