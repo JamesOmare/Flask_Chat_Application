@@ -25,7 +25,9 @@ def create_app(config = Config):
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
-    socketio.init_app(app, cors_allowed_origins=["http://127.0.0.1:5000"])
+    # socketio.init_app(app,logger=True,
+    # engineio_logger=True, cors_allowed_origins=["http://127.0.0.1:5000"])
+    socketio.init_app(app)
 
     #register blueprints
     app.register_blueprint(auth)
