@@ -14,5 +14,5 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config(object):
     SECRET_KEY = config('SECRET_KEY')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_DATABASE_URI = config('DATABASE_URL')
+    SQLALCHEMY_DATABASE_URI = config('DATABASE_URL').replace('postgres://', 'postgresql://')
     DEBUG = config('DEBUG', cast=bool)
