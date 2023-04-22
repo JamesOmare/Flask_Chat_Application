@@ -30,6 +30,9 @@ Open your web browser and go to `http://localhost:5000`. You will be redirected 
 
 After logging in, you will be redirected to the chat page where you can send and receive messages with other users in real-time.
 
+## Live site
+The live site is deployed at heroku: "https://jamesfeed-chat.herokuapp.com"
+
 ## Contributing
 
 Contributions are always welcome! If you would like to contribute to this project, please open a pull request.
