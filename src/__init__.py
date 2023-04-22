@@ -33,7 +33,9 @@ def create_app(config = Config):
     app.register_blueprint(auth)
     app.register_blueprint(chat)
 
-    create_database(app)
+    # create_database(app)
+    with app.app_context():
+        db.create_all()
 
     login_manager.login_view = 'auth.login'
 
@@ -75,7 +77,7 @@ def create_app(config = Config):
     
     return app
 
-def create_database(app):
-    if not path.exists('src/config/'+DB_NAME):
-        db.create_all(app = app)
-        print('created database')
+# def create_database(app):
+#     if not path.exists('src/config/'+DB_NAME):
+#         db.create_all(app = app)
+#         print('created database')

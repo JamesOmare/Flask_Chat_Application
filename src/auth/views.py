@@ -21,35 +21,23 @@ def register():
             username = reg_form.username.data
             password = reg_form.password.data
 
-            new_user = User(
-                username = username,
-                password = generate_password_hash(password, method='sha256')
-            )
-
-            db.session.add(new_user)
-            db.session.commit()
-            login_user(new_user, remember=True)
-            flash('User created, you can log in with the registered credentials', 'success')
-
-            return redirect(url_for('auth.login'))
-
             #check if username exists
-            # username_exists = User.query.filter_by(username = username).first()
-            # if username_exists:
-            #     flash('Username already exists, choose another one.', 'primary')
+            username_exists = User.query.filter_by(username = username).first()
+            if username_exists:
+                flash('Username already exists, choose another one.', 'primary')
             
-            # else:
-            #     new_user = User(
-            #         username = username,
-            #         password = generate_password_hash(password, method='sha256')
-            #     )
+            else:
+                new_user = User(
+                    username = username,
+                    password = generate_password_hash(password, method='sha256')
+                )
 
-            #     db.session.add(new_user)
-            #     db.session.commit()
-            #     login_user(new_user, remember=True)
-            #     flash('User created, you can log in with the registered credentials', 'success')
+                db.session.add(new_user)
+                db.session.commit()
+                login_user(new_user, remember=True)
+                flash('User created, you can log in with the registered credentials', 'success')
 
-            #     return redirect(url_for('auth.login'))
+                return redirect(url_for('auth.login'))
 
     
 
